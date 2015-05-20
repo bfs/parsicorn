@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+path = File.expand_path('../',File.dirname(__FILE__))
+ENV['BUNDLE_GEMFILE'] = path + '/Gemfile'
+
+options = {
+}
+
+
+o = OptionParser.new do |opts|
+  opts.separator  "parses lots of things into tables of rows"
+  opts.banner +=  " FILE1 FOLDER2 TARBALL3 SPREADSHEET4 ZIPFILE5 ... THINGN"
+  opts.on("-v", "--version", "output version number") {|v| options[:print_version] = v }
+  opts.on("-h", "--help", "shows this help message")  { puts opts.to_s; exit }
+end
+
+
+paths = o.parse!(ARGV) rescue (abort o.to_s)
+
+require path + '/lib/parsicorn'
+
+parsicorn = Parsicorn::Parser.new(options)
+if options[:print_version]
+  puts "Parsicorn Version: #{Parsicorn::VERSION}"
+  abort o.to_s
+else
+  parsicorn.parse(paths) do |t|
+
+  end
+end
